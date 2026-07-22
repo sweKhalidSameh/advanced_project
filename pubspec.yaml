@@ -52,10 +52,15 @@ dependencies:
   retrofit_generator: ^10.2.8
   pretty_dio_logger: ^1.4.0
   # Localization
-  intl: ^0.20.3
+  # intl: ^0.20.2
   easy_localization: ^3.0.8
 
   flutter_native_splash: ^2.4.8
+  # An SVG rendering and widget library for Flutter, which allows painting and displaying Scalable Vector Graphics 1.1 files.
+  flutter_svg: ^2.3.0
+  # for adapting screen and font size
+  flutter_screenutil: ^5.9.2
+
 
 dev_dependencies:
   flutter_test:
