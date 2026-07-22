@@ -8,10 +8,8 @@ class AppRouter {
     switch (settings.name) {
       case Routes.onBoardingScreen:
         return MaterialPageRoute(builder: (_) => OnboardingScreen());
-        break;
       case Routes.loginScreen:
         return MaterialPageRoute(builder: (_) => LoginScreen());
-        break;
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
