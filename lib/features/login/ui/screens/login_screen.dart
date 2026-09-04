@@ -1,23 +1,21 @@
 import 'package:advanced_project/core/theming/colors.dart';
 import 'package:advanced_project/core/theming/textStyle.dart';
 import 'package:advanced_project/core/widgets/app_text_bottin.dart';
-import 'package:advanced_project/core/widgets/app_text_form_field.dart';
+import 'package:advanced_project/features/login/data/models/login_request_body.dart';
+import 'package:advanced_project/features/login/logic/cubit/login_cubit.dart';
 import 'package:advanced_project/features/login/ui/widgets/Terms_and_condition_text.dart';
 import 'package:advanced_project/features/login/ui/widgets/already_have_accont_text.dart';
+import 'package:advanced_project/features/login/ui/widgets/email_and_password.dart';
+import 'package:advanced_project/features/login/ui/widgets/login_bloc_listener.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  bool isObscureText = true;
   bool isChecked = false;
-  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,82 +33,54 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: Textstyles.font14GrayRegular,
                 ),
                 SizedBox(height: 36.h),
-                Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      // Email and Password fields
-                      AppTextFormField(hintText: "Email"),
-                      SizedBox(height: 16.h),
-                      AppTextFormField(
-                        hintText: "Password",
-                        isObscureText: isObscureText,
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isObscureText = !isObscureText;
-                            });
-                          },
-                          child: Icon(
-                            isObscureText
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
+                Column(
+                  children: [
+                    // Email and Password fields
+                    EmailAndPassword(),
+                    SizedBox(height: 16.h),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 9.0),
+                          child: GestureDetector(
+                            child: Icon(
+                              isChecked
+                                  ? Icons.check_box
+                                  : Icons.check_box_outline_blank,
+                              color: ColorsManager.gray,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 16.h),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 9.0,
-                            ),
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isChecked = !isChecked;
-                                });
-                              },
-                              child: Icon(
-                                isChecked
-                                    ? Icons.check_box
-                                    : Icons.check_box_outline_blank,
-                                color: ColorsManager.gray,
-                              ),
+                        Text(
+                          "Remember me",
+                          style: Textstyles.font12GrayRegular,
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: Text(
+                              "Forgot Password?",
+                              style: Textstyles.font12BlueRegular,
                             ),
                           ),
-                          Text(
-                            "Remember me",
-                            style: Textstyles.font12GrayRegular,
-                          ),
-                          Expanded(
-                            child: Align(
-                              alignment: AlignmentDirectional.centerEnd,
-                              child: Text(
-                                "Forgot Password?",
-                                style: Textstyles.font12BlueRegular,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
 
-                      SizedBox(height: 32.h),
-                      AppTextButton(
-                        buttonText: "Login",
-                        textStyle: Textstyles.font16WhiteSemiBold,
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            // Perform login logic here
-                          }
-                        },
-                      ),
-                      SizedBox(height: 46.h),
-                      TermsAndConditionText(),
-                      SizedBox(height: 24.h),
-                      AlreadyHaveAccontText(),
-                    ],
-                  ),
+                    SizedBox(height: 32.h),
+                    AppTextButton(
+                      buttonText: "Login",
+                      textStyle: Textstyles.font16WhiteSemiBold,
+                      onPressed: () {
+                        ValidateThenDoLigin(context);
+                      },
+                    ),
+                    SizedBox(height: 46.h),
+                    TermsAndConditionText(),
+                    SizedBox(height: 24.h),
+                    AlreadyHaveAccontText(),
+                    LoginBlocListener(),
+                  ],
                 ),
               ],
             ),
@@ -118,5 +88,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void ValidateThenDoLigin(BuildContext context) {
+    if (context.read<LoginCubit>().formKey.currentState!.validate()) {
+      // Perform login action
+      context.read<LoginCubit>().emitLoginState(
+        LoginRequestBody(
+          email: context.read<LoginCubit>().emailController.text,
+          password: context.read<LoginCubit>().passwordController.text,
+        ),
+      );
+    }
   }
 }
