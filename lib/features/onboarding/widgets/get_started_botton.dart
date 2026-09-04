@@ -21,7 +21,7 @@ class GetStartedBotton extends StatelessWidget {
       ),
       child: Text(
         "Get Started",
-        style: Textstyles.font16whiteSemiBold,
+        style: Textstyles.font16WhiteSemiBold,
         textAlign: TextAlign.center,
       ),
     );
